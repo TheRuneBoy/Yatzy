@@ -5,66 +5,144 @@ package models;
  */
 public class YatzyResultCalculator {
 
-    /**
-     *
-     * @param dice
-     */
+    private Die[] dice;
+    private int[] sum = new int[6];
+
+
     public YatzyResultCalculator(Die[] dice) {
-        //TODO: implement YatzyResultCalculator constructor.
+        //YatzyResultCalculator constructor.
+        this.dice = dice;
+        for (Die die : dice) {
+            sum[die.getEyes() - 1]++;
+        }
     }
 
-    /**
-     * Calculates the score for Yatzy uppersection
-     * @param eyes eye value to calculate score for. eyes should be between 1 and 6
-     * @return the score for specified eye value
-     */
     public int upperSectionScore(int eyes) {
-        //TODO: Implement upperSectionScore method.
-        return 0;
+        return sum[eyes - 1] * eyes;
+    }
+
+    public int upperSectionSum(){
+    int totalSum = 0;
+    for (int eyes = 1; eyes <= 6; eyes++){
+        totalSum += upperSectionScore(eyes);
+    }
+    return totalSum;
+    }
+
+    public int bonus(){
+        if (upperSectionSum() >= 63) {
+            return 50;
+        } else return 0;
     }
 
     public int onePairScore() {
-        //TODO: implement onePairScore method.
-        return 0;
+        //Metode til at finde og udregne summen af 1 par
+        int pairMaxValue = 0;
+        for (int index = 6; index >= 1; index--) {
+            if (sum[index - 1] >= 2) {
+                pairMaxValue = index * 2;
+            }
+        }
+        return pairMaxValue;
     }
 
     public int twoPairScore() {
-        //TODO: implement twoPairScore method.
-        return 0;
+        //Metode til at finde og udregne summen af 2 par
+        int pairValue = 0;
+        int pairValue2 = 0;
+
+        for (int index = 6; index >= 1; index--) {
+            if (sum[index - 1] >= 2) {
+                if (pairValue == 0) {
+                    pairValue = index * 2;
+                } else {
+                    pairValue2 = index * 2;
+                    break;
+                }
+            }
+        }
+        return (pairValue != 0 && pairValue2 != 0) ? pairValue + pairValue2 : 0;
     }
 
     public int threeOfAKindScore() {
-        //TODO: implement threeOfAKindScore method.
-        return 0;
+        //Metode for at finde 3 ens og udregne summen
+        int threeOfAKind = 0;
+        for (int index = 6; index >= 1; index--) {
+            if (sum[index - 1] >= 3) {
+                threeOfAKind = index * 3;
+            }
+        }
+        return threeOfAKind;
     }
 
     public int fourOfAKindScore() {
-        //TODO: implement fourOfAKindScore method.
-        return 0;
+        //Metoden for at finde 4 ens og udregne summen
+        int fourOfAKind = 0;
+        for (int index = 6; index >= 1; index--) {
+            if (sum[index - 1] >= 4) {
+                fourOfAKind = index * 4;
+            }
+        }
+        return fourOfAKind;
     }
 
     public int smallStraightScore() {
-        //TODO: implement smallStraightScore method.
-        return 0;
+        //Metode til at se efter en small straight
+        int[] expected = {1, 2, 3, 4, 5};
+        return checkStraight(expected) ? 15 : 0;
     }
+
 
     public int largeStraightScore() {
-        //TODO: implement largeStraightScore method.
-        return 0;
+        //Metoden til at se efter en large straight
+        int[] expected = {2, 3, 4, 5, 6};
+        return checkStraight(expected) ? 20 : 0;
     }
 
+    //Boolean metode til at se efter straight
+    public boolean checkStraight(int[] expected) {
+        boolean[] found = new boolean[7];
+        for (Die die : dice) {
+            found[die.getEyes()] = true;
+        }
+        for (int value : expected) {
+            if (!found[value]) return false;
+        }
+        return true;
+    }
+
+
     public int fullHouseScore() {
-        //TODO: implement fullHouseScore method.
-        return 0;
+        //Metode til at se efter fuldt hus og udregne summen
+        int threeOfAKind = 0;
+        int pair = 0;
+        for (int index = 6; index >= 1; index--) {
+            if (sum[index - 1] >= 3 && threeOfAKind == 0) {
+                threeOfAKind = index * 3;
+            } else if (sum[index - 1] >= 2 && pair == 0) {
+                pair = index * 2;
+            }
+        }
+        return (threeOfAKind != 0 && pair != 0) ? threeOfAKind + pair : 0;
     }
 
     public int chanceScore() {
-        //TODO: implement chanceScore method.
-        return 0;
+        int sum = 0;
+        for(Die die : dice)
+            sum += die.getEyes();
+        return sum;
     }
 
     public int yatzyScore() {
         //TODO: implement yatzyScore method.
-        return 0;
+        int sum = 0;
+        int firstValue = dice[0].getEyes();
+        for (Die die : dice) {
+            if (die.getEyes() != firstValue) {
+                return 0;
+            }
+            sum += die.getEyes();
+        }
+        return 50 + sum;
     }
 }
