@@ -41,6 +41,7 @@ public class YatzyResultCalculator {
         for (int index = 6; index >= 1; index--) {
             if (sum[index - 1] >= 2) {
                 pairMaxValue = index * 2;
+                return pairMaxValue;
             }
         }
         return pairMaxValue;
@@ -134,15 +135,11 @@ public class YatzyResultCalculator {
     }
 
     public int yatzyScore() {
-        //TODO: implement yatzyScore method.
-        int sum = 0;
-        int firstValue = dice[0].getEyes();
-        for (Die die : dice) {
-            if (die.getEyes() != firstValue) {
-                return 0;
+        for (int number : sum) {
+            if (number == 5) {
+                return 50;
             }
-            sum += die.getEyes();
         }
-        return 50 + sum;
+        return 0;
     }
 }
